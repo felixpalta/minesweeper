@@ -3,63 +3,9 @@
 #include <exception>
 #include <stdexcept>
 
-struct Mine_cell
-{
-    int row;
-    int column;
-    int value;
-    Mine_cell(int r, int c, int v)
-        :row(r), column(c), value(v) {}
-};
+#include <Mine_field.h>
 
-class Mine_field
-{
-public:
-    Mine_field(int n);
-    int size() const { return sz; }
-    Mine_cell get_cell(int r, int c) const;
-
-    static const int MIN_FIELD_SIZE = 2;
-
-private:
-    int sz;
-    std::vector<Mine_cell> mines;
-
-};
-
-Mine_cell Mine_field::get_cell(int r, int c) const
-{
-    for (unsigned int i = 0; i < mines.size(); ++i)
-    {
-        if (mines[i].row == r && mines[i].column == c)
-            return mines[i];
-    }
-    throw std::runtime_error("Tried to get impossible cell");
-}
-
-Mine_field::Mine_field(int n)
-: sz(n)
-{
-    int k = 0;
-    for (int i = 0; i < sz; ++i)
-        for (int j = 0; j < sz; ++j)
-        {
-            mines.push_back(Mine_cell(i, j, k));
-            ++k;
-        }
-}
-
-void drawMineField(const Mine_field& m)
-{
-    for (int i = 0; i < m.size(); ++i)
-    {
-        for (int j = 0; j < m.size(); ++j)
-        {
-            std::cout << m.get_cell(i, j).value << '\t';
-        }
-        std::cout << std::endl;
-    }
-}
+void drawMineField(const Mine_field& m);
 
 int main()
 try
@@ -69,13 +15,54 @@ try
 
     do
     {
-        std::cout << "Input field size, N >= " << Mine_field::MIN_FIELD_SIZE << ": ";
+        std::cout << "\nInput field size, N >= " << Mine_field::MIN_FIELD_SIZE << ": ";
         std::cin >> field_size;
-    } while (!std::cin || field_size < Mine_field::MIN_FIELD_SIZE);
+        if (!std::cin)
+        {
+            std::cin.clear();
+            std::cin.ignore();
+            continue;
+        }
+    }
+    while (field_size < Mine_field::MIN_FIELD_SIZE);
 
     std::cout << "Your input is " << field_size << std::endl;
 
     Mine_field m(field_size);
+
+    int number_of_mines = 0;
+
+    do
+    {
+        std::cout << "\nInput number of mines, N < " << m.cell_number() << ": ";
+        std::cin >> number_of_mines;
+        if (!std::cin)
+        {
+            std::cin.clear();
+            std::cin.ignore();
+            continue;
+        }
+    } while (number_of_mines >= m.cell_number() || number_of_mines < 1);
+
+    std::cout << "Your number of mines is " << number_of_mines << std::endl;
+
+    int select_row = -1, select_col = -1;
+
+    do
+    {
+        std::cout << "\nInput row and column number of the cell you want to start with: ";
+        std::cin >> select_row >> select_col;
+        if (!std::cin)
+        {
+            std::cin.clear();
+            std::cin.ignore();
+            continue;
+        }
+    } while (!m.cell_is_present_in_field(select_row, select_col));
+
+    m.generate_mines(number_of_mines, select_row, select_col);
+    m.generate_neighbor_numbers();
+
     drawMineField(m);
     return 0;
 }
@@ -83,4 +70,16 @@ catch (std::exception& e)
 {
     std::cerr << e.what() << std::endl;
     return 1;
+}
+
+void drawMineField(const Mine_field& m)
+{
+    for (int i = 0; i < m.side_size(); ++i)
+    {
+        for (int j = 0; j < m.side_size(); ++j)
+        {
+            std::cout << m.get_cell(i, j).value << '\t';
+        }
+        std::cout << std::endl;
+    }
 }
