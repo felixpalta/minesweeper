@@ -31,18 +31,20 @@ bool operator!=(const Mine_cell& left, const Mine_cell& right);
 class Mine_field
 {
 public:
-    explicit Mine_field(int n);
+    explicit Mine_field(int r, int c);
     const Mine_cell& get_cell(int r, int c) const;
 
-    int side_size() const { return side_sz; }
-    int cell_number() const { return mines.size(); }
+    int rows_number() const { return rowsN; }
+    int cols_number() const { return colsN; }
+    int cells_number() const { return mines.size(); }
     bool cell_is_present_in_field(int row, int col) const;
     void generate_mines(int N, int row, int col);
     void generate_neighbor_numbers();
     static const int MIN_FIELD_SIZE = 2;
 
 private:
-    int side_sz;
+    int rowsN;
+    int colsN;
     std::vector<Mine_cell> mines;
 
 };

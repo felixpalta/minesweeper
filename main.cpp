@@ -10,13 +10,13 @@ void drawMineField(const Mine_field& m);
 int main()
 try
 {
-    int field_size = 0;
+    int field_rows_size = 0, field_cols_size = 0;
 
 
     do
     {
-        std::cout << "\nInput field size, N >= " << Mine_field::MIN_FIELD_SIZE << ": ";
-        std::cin >> field_size;
+        std::cout << "\nInput field size, N of rows and N of columns, \nboth >= " << Mine_field::MIN_FIELD_SIZE << ": ";
+        std::cin >> field_rows_size >> field_cols_size;
         if (!std::cin)
         {
             std::cin.clear();
@@ -24,17 +24,17 @@ try
             continue;
         }
     }
-    while (field_size < Mine_field::MIN_FIELD_SIZE);
+    while (field_rows_size < Mine_field::MIN_FIELD_SIZE && field_cols_size < Mine_field::MIN_FIELD_SIZE);
 
-    std::cout << "Your input is " << field_size << std::endl;
+    std::cout << "Your field has " << field_rows_size << " rows and " << field_cols_size << " columns." <<  std::endl;
 
-    Mine_field m(field_size);
+    Mine_field m(field_rows_size, field_cols_size);
 
     int number_of_mines = 0;
 
     do
     {
-        std::cout << "\nInput number of mines, N < " << m.cell_number() << ": ";
+        std::cout << "\nInput number of mines, N < " << m.cells_number() << ": ";
         std::cin >> number_of_mines;
         if (!std::cin)
         {
@@ -42,7 +42,7 @@ try
             std::cin.ignore();
             continue;
         }
-    } while (number_of_mines >= m.cell_number() || number_of_mines < 1);
+    } while (number_of_mines >= m.cells_number() || number_of_mines < 1);
 
     std::cout << "Your number of mines is " << number_of_mines << std::endl;
 
@@ -74,9 +74,9 @@ catch (std::exception& e)
 
 void drawMineField(const Mine_field& m)
 {
-    for (int i = 0; i < m.side_size(); ++i)
+    for (int i = 0; i < m.rows_number(); ++i)
     {
-        for (int j = 0; j < m.side_size(); ++j)
+        for (int j = 0; j < m.cols_number(); ++j)
         {
             std::cout << m.get_cell(i, j).value << '\t';
         }

@@ -15,12 +15,12 @@ bool operator!=(const Mine_cell& left, const Mine_cell& right)
     return !(left == right);
 }
 
-Mine_field::Mine_field(int n)
-: side_sz(n)
+Mine_field::Mine_field(int r, int c)
+: rowsN(r), colsN(c)
 {
     int k = 0;
-    for (int i = 0; i < side_sz; ++i)
-        for (int j = 0; j < side_sz; ++j)
+    for (int i = 0; i < rowsN; ++i)
+        for (int j = 0; j < colsN; ++j)
         {
             mines.push_back(Mine_cell(i, j, Mine_cell::EMPTY));
             ++k;
@@ -43,7 +43,7 @@ void Mine_field::generate_mines(int N, int row, int col)
 {
     // these checks should be caller responsibility
     // that is why only asserts() are used
-    assert(N < cell_number());
+    assert(N < cells_number());
     assert (cell_is_present_in_field(row, col));
 
     srand(time(NULL));
@@ -60,7 +60,7 @@ void Mine_field::generate_mines(int N, int row, int col)
 
 void Mine_field::generate_neighbor_numbers()
 {
-    for (int i = 0; i < cell_number(); ++i)
+    for (int i = 0; i < cells_number(); ++i)
     {
         Mine_cell& this_cell = mines[i];
         if (this_cell.is_a_mine()) continue;
@@ -84,5 +84,5 @@ void Mine_field::generate_neighbor_numbers()
 
 bool Mine_field::cell_is_present_in_field(int row, int col) const
 {
-    return (row >= 0 && row < side_sz && col >= 0 && col < side_size());
+    return (row >= 0 && row < rowsN && col >= 0 && col < colsN);
 }
