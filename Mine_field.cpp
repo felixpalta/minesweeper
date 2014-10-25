@@ -27,8 +27,10 @@ Mine_field::Mine_field(int n)
         }
 }
 
-Mine_cell Mine_field::get_cell(int r, int c) const
+const Mine_cell& Mine_field::get_cell(int r, int c) const
 {
+    assert (cell_is_present_in_field(r, c));
+
     for (unsigned int i = 0; i < mines.size(); ++i)
     {
         if (mines[i].row == r && mines[i].column == c)
@@ -39,6 +41,11 @@ Mine_cell Mine_field::get_cell(int r, int c) const
 
 void Mine_field::generate_mines(int N, int row, int col)
 {
+    // these checks should be caller responsibility
+    // that is why only asserts() are used
+    assert(N < cell_number());
+    assert (cell_is_present_in_field(row, col));
+
     srand(time(NULL));
     for (int i = 0; i < N; ++i)
     {

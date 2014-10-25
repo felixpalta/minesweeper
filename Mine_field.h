@@ -32,7 +32,7 @@ class Mine_field
 {
 public:
     explicit Mine_field(int n);
-    Mine_cell get_cell(int r, int c) const;
+    const Mine_cell& get_cell(int r, int c) const;
 
     int side_size() const { return side_sz; }
     int cell_number() const { return mines.size(); }
