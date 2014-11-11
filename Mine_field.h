@@ -1,52 +1,28 @@
 #ifndef MINE_FIELD_H
 #define MINE_FIELD_H
 
-#include <vector>
+#include "matrix.h"
+#include "mine_cell.h"
 
-struct Mine_cell
-{
-    int row;
-    int column;
-    int value;
-    Mine_cell(int r, int c, int v)
-        :row(r), column(c), value(v) {}
-    Mine_cell(int r, int c)
-        :row(r), column(c), value(0) {}
-
-    bool is_a_mine() const { return value == MINE; }
-    bool is_empty() const { return value == EMPTY; }
-
-    enum Cell_type
-    {
-        MINE = -1,
-        EMPTY = 0
-    };
-    static const int MAX_VALUE = 8; // a cell, surrounded by mines will have 8 neighbours, i.e. it is max value of the cell.
-
-};
-
-bool operator==(const Mine_cell& left, const Mine_cell& right);
-bool operator!=(const Mine_cell& left, const Mine_cell& right);
+typedef Matrix<Mine_cell> MineMatrix;
 
 class Mine_field
 {
 public:
-    explicit Mine_field(int r, int c);
-    const Mine_cell& get_cell(int r, int c) const;
+    Mine_field(int r, int c)
+        :mines(r, c)    {}
 
-    int rows_number() const { return rowsN; }
-    int cols_number() const { return colsN; }
-    int cells_number() const { return mines.size(); }
-    bool cell_is_present_in_field(int row, int col) const;
-    void generate_mines(int N, int row, int col);
+    int cells_number() const { return mines.rows() * mines.cols(); }
+    void generate_mines(int N, int start_row, int start_col);
     void generate_neighbor_numbers();
-    static const int MIN_FIELD_SIZE = 2;
+    bool is_within_field(int row, int col);
 
+    int rows() const {return mines.rows();}
+    int cols() const {return mines.cols();}
+
+    const Mine_cell& get_cell(int r, int c) const {return mines(r, c); }
 private:
-    int rowsN;
-    int colsN;
-    std::vector<Mine_cell> mines;
-
+    MineMatrix mines;
 };
 
 #endif // MINE_FIELD_H

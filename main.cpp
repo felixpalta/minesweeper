@@ -3,19 +3,20 @@
 #include <exception>
 #include <stdexcept>
 
-#include <Mine_field.h>
+#include "Mine_field.h"
 
-void drawMineField(const Mine_field& m);
+void drawMineField(const Mine_field& M);
+
+const int MIN_SIDE_SIZE = 2;
 
 int main()
 try
 {
     int field_rows_size = 0, field_cols_size = 0;
 
-
     do
     {
-        std::cout << "\nInput field size, N of rows and N of columns, \nboth >= " << Mine_field::MIN_FIELD_SIZE << ": ";
+        std::cout << "\nInput field size, N of rows and N of columns, \nboth >= " << MIN_SIDE_SIZE << ": ";
         std::cin >> field_rows_size >> field_cols_size;
         if (!std::cin)
         {
@@ -24,7 +25,7 @@ try
             continue;
         }
     }
-    while (field_rows_size < Mine_field::MIN_FIELD_SIZE && field_cols_size < Mine_field::MIN_FIELD_SIZE);
+    while (field_rows_size < MIN_SIDE_SIZE && field_cols_size < MIN_SIDE_SIZE);
 
     std::cout << "Your field has " << field_rows_size << " rows and " << field_cols_size << " columns." <<  std::endl;
 
@@ -58,7 +59,7 @@ try
             std::cin.ignore();
             continue;
         }
-    } while (!m.cell_is_present_in_field(select_row, select_col));
+    } while (!m.is_within_field(select_row, select_col));
 
     m.generate_mines(number_of_mines, select_row, select_col);
     m.generate_neighbor_numbers();
@@ -72,14 +73,15 @@ catch (std::exception& e)
     return 1;
 }
 
-void drawMineField(const Mine_field& m)
+void drawMineField(const Mine_field& M)
 {
-    for (int i = 0; i < m.rows_number(); ++i)
+    for (int i = 0; i < M.rows(); ++i)
     {
-        for (int j = 0; j < m.cols_number(); ++j)
+        for (int j = 0; j < M.cols(); ++j)
         {
-            std::cout << m.get_cell(i, j).value << '\t';
+            std::cout << M.get_cell(i, j).value << '\t';
         }
         std::cout << std::endl;
     }
+
 }
