@@ -13,5 +13,6 @@ SOURCES += \
 HEADERS += \
     Mine_field.h \
     matrix.h \
-    mine_cell.h
+    mine_cell.h \
+    input_loop.h
 

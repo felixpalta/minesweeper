@@ -41,7 +41,7 @@ void Mine_field::generate_neighbor_numbers()
                 {
                     int neighbor_row = row + dr;
                     int neighbor_col = col + dc;
-                    if (is_within_field(neighbor_row, neighbor_col))
+                    if (is_within_field(*this, neighbor_row, neighbor_col))
                     {
                         const Mine_cell& neighbour_cell = mines(neighbor_row, neighbor_col);
                         if (neighbour_cell.is_a_mine())
@@ -54,7 +54,7 @@ void Mine_field::generate_neighbor_numbers()
         }
 }
 
-bool Mine_field::is_within_field(int row, int col)
+bool is_within_field(const Mine_field& m, int row, int col)
 {
-    return (row < mines.rows()) && (col < mines.cols()) && (row >= 0) && (col >= 0);
+    return (row < m.rows()) && (col < m.cols()) && (row >= 0) && (col >= 0);
 }
