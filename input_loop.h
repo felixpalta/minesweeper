@@ -52,7 +52,7 @@ void input_loop(
 
 // Input loop for reading two values and checking them with one single condition functor.
 template <typename T1, typename T2, typename Callable>
-void new_input_loop(
+void input_loop(
     std::istream& ist, std::string input_prompt, std::ostream& ost, Callable cond, T1& x1, T2& x2)
 {
     T1 temp1;

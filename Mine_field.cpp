@@ -5,13 +5,60 @@
 
 #include "Mine_field.h"
 
+void Mine_field::start(int N, int start_row, int start_col)
+{
+    // these checks should be caller's responsibility
+    if (N >= cells_number() || !is_within_field(*this, start_row, start_col))
+        throw std::runtime_error("Bad arguments for Mine_field::start()");
+
+    generate_mines(N, start_row, start_col);
+    generate_neighbor_numbers();
+    try_cell(start_row, start_col);
+}
+
+bool Mine_field::try_cell(int row, int col)
+{
+    if (!is_within_field(*this, row, col))
+        throw std::runtime_error("Bad arguments for Mine_field::start()");
+
+    Mine_cell& mc = get_cell(row, col);
+
+    if (mc.is_covered())
+    {
+        mc.uncover();
+        if (mc.is_a_mine())
+            return false;
+        if (mc.is_empty())
+            uncover_neighbours(row, col);
+    }
+    return true;
+}
+
+void Mine_field::uncover_neighbours(int row, int col)
+{
+    for (int neighbor_row = row-1; neighbor_row <= row + 1; ++neighbor_row)
+        for (int neighbor_col = col-1; neighbor_col <=col + 1; ++neighbor_col)
+        {
+            if (is_within_field(*this, neighbor_row, neighbor_col))
+            {
+                Mine_cell& mc = get_cell(neighbor_row, neighbor_col);
+                if (mc.is_covered())
+                {
+                    if (mc.is_empty())
+                    {
+                        mc.uncover();
+                        uncover_neighbours(neighbor_row, neighbor_col);
+                    }
+                    else if (!mc.is_a_mine())
+                        mc.uncover();
+                }
+            }
+        }
+}
+
 void Mine_field::generate_mines(int N, int start_row, int start_col)
 {
-    // these checks should be caller responsibility
-    // that is why only asserts() are used
-    assert(N < cells_number());
-
-    srand(unsigned(time(NULL)));
+    srand(1);
     while (N > 0)
     {
         int this_row = rand() % mines.rows();
