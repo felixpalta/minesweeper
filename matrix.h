@@ -33,8 +33,8 @@ private:
     int _cols;
     std::vector<T> data;
 
-//    Matrix(const Matrix& m) = delete;
-//    Matrix& operator=(Matrix const& m) = delete;
+    Matrix(const Matrix& m) = delete;
+    Matrix& operator=(Matrix const& m) = delete;
 
 };
 
@@ -48,7 +48,7 @@ Matrix<T>::Matrix(int r, int c)
     _rows = r;
     _cols = c;
 
-    data = std::vector<T>(r * c);
+    data = std::vector<T>(unsigned(r * c));
 }
 
 template<class T>
